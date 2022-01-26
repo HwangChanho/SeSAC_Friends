@@ -13,6 +13,6 @@ extension UIButton {
         self.setTitleColor(titleColor, for: .normal)
         self.layer.cornerRadius = 8
         self.setTitle(text, for: .normal)
-        self.titleLabel?.font = UIFont(name: UIFont.NSRegular, size: 15)
+        self.titleLabel?.font = UIFont(name: UIFont.NSRegular, size: 14)
     }
 }

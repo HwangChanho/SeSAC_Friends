@@ -14,6 +14,7 @@ protocol Coordinator: AnyObject {
 }
 
 class AppCoordinator: Coordinator, LoginCoordinatorDelegate, MainCoordinatorDelegate, OnBoardingCoordinatorDelegate {
+    
     var childCoordinators: [Coordinator] = []
     
     private var navigationController: UINavigationController!
@@ -27,6 +28,7 @@ class AppCoordinator: Coordinator, LoginCoordinatorDelegate, MainCoordinatorDele
     
     func start() {
         showOnBoardingViewController()
+        // showMainViewController()
 //        if !UserDefaults.isfirstLogin {
 //            showOnBoardingViewController()
 //            UserDefaults.standard.set(true, forKey: Constants.isFirstLoggin)
@@ -34,7 +36,7 @@ class AppCoordinator: Coordinator, LoginCoordinatorDelegate, MainCoordinatorDele
 //
 //        }
     }
- 
+    
     private func showMainViewController() {
         let coordinator = MainCoordinator(navigationController: self.navigationController)
         
@@ -62,12 +64,16 @@ class AppCoordinator: Coordinator, LoginCoordinatorDelegate, MainCoordinatorDele
         self.childCoordinators.append(coordinator)
     }
     
-    func didLoggedIn(_ coordinator: LoginCoordinator) {
+    func backButtonPressed(_ coordinator: MainCoordinator) {
         self.childCoordinators = self.childCoordinators.filter { $0 !== coordinator }
-        self.showMainViewController()
+        self.showLoginViewController()
     }
     
-    func didLoggedOut(_ coordinator: MainCoordinator) {
+    func startButtonPressed(_ coordinator: MainCoordinator) {
+        
+    }
+    
+    func didLoggedIn(_ coordinator: LoginCoordinator) {
         self.childCoordinators = self.childCoordinators.filter { $0 !== coordinator }
         self.showMainViewController()
     }
@@ -76,6 +82,7 @@ class AppCoordinator: Coordinator, LoginCoordinatorDelegate, MainCoordinatorDele
         self.childCoordinators = self.childCoordinators.filter { $0 !== coordinator }
         self.showLoginViewController()
     }
+    
 }
 
 

@@ -12,3 +12,11 @@ enum PhoneNumberAuthStatus: Error {
     case success
     case unknownError
 }
+
+enum VerifyNumberAuthStatus: Int, Error {
+    case validityExpired
+    case wrongVerificationNumber = 17044
+    case tokenFail
+    case unknownError
+    case success
+}

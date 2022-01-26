@@ -8,8 +8,7 @@
 import UIKit
 import SnapKit
 
-class UnderLindeTextField: UITextField {
-    
+class UnderLineTextField: UITextField {
     lazy var placeholderColor: UIColor = self.tintColor
     lazy var placeholderString: String = ""
     
@@ -53,7 +52,7 @@ class UnderLindeTextField: UITextField {
 
 // MARK: - Methods
 
-extension UnderLindeTextField {
+extension UnderLineTextField {
     @objc func editingDidBegin() {
         setPlaceholder()
         underLineView.backgroundColor = placeholderColor

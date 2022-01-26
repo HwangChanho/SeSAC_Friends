@@ -9,11 +9,6 @@ import RxSwift
 import FirebaseAuth
 import RxRelay
 
-enum A: Int, Error {
-    case testA = 400
-    case testB = 401
-}
-
 class PhoneNumberCheckViewModel {
     let phoneNumberObserver = BehaviorSubject<String>(value: "")
     var phoneNum = ""
@@ -21,7 +16,6 @@ class PhoneNumberCheckViewModel {
     let valid = BehaviorRelay<Bool>(value: false)
     
     // MARK: - Firebase
-    
     func getVerifyNumber(completion: @escaping (PhoneNumberAuthStatus) -> Void) {
         let number = "+82 \(phoneNum)"
         
@@ -42,6 +36,8 @@ class PhoneNumberCheckViewModel {
             }
             
             UserDefaults.standard.set(verificationID, forKey: Constants.UserInfo.firebaseAuth)
+            UserDefaults.standard.set(self.phoneNum, forKey: Constants.UserInfo.userPhoneNum)
+                
             completion(.success)
         }
     }

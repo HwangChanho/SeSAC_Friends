@@ -15,12 +15,12 @@ protocol LoginViewControllerDelegate {
 
 class LoginViewController: UIViewController, UITextFieldDelegate {
     // MARK: - Properties
-    let PNCView = LoginMiddleView()
-    var viewModel = PhoneNumberCheckViewModel()
-    
     var delegate: LoginViewControllerDelegate?
     
     var disposeBag = DisposeBag()
+    
+    let PNCView = LoginMiddleView()
+    let viewModel = PhoneNumberCheckViewModel()
     
     // MARK: - View
     override func viewWillDisappear(_ animated: Bool) {
@@ -85,7 +85,6 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
                     self.showEdgeToast(message: "전화 번호 인증 시작")
                     // firebase 통신
                     self.viewModel.getVerifyNumber { state in
-                        print(state)
                         switch state {
                         case .tooManyRequests:
                             self.showEdgeToast(message: "과도한 인증 시도가 있었습니다. 나중에 다시 시도해 주세요.")
@@ -101,8 +100,6 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
             })
             .disposed(by: disposeBag)
     }
-    
-    
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         self.view.endEditing(true)
@@ -120,11 +117,7 @@ extension LoginViewController {
 // MARK: - @obj Methods
 
 extension LoginViewController {
-    @objc func backButtonPressed(_ sender : UIButton) {
-        
-    }
-    
     @objc func certifycationButtonPressed() {
-        self.delegate?.login()
+        self.delegate?.moveToVerify()
     }
 }

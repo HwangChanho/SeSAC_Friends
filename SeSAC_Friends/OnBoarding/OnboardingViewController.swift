@@ -29,13 +29,10 @@ class OnBoardingViewController: UIViewController {
     
     let pageControl = UIPageControl()
     let button = UIButton()
-    
     let stackView = UIStackView()
     
     let model = onBoard()
-    
     var delegate: OnBoardingControllerDelegate?
-    
     var disposeBag = DisposeBag()
     
     // MARK: - View

@@ -10,7 +10,7 @@ import SnapKit
 
 class PhoneNumberCheckView: UIView, BasicViewSetup {
     // MARK: - Properties
-    let textField = UnderLindeTextField()
+    let textField = UnderLineTextField()
     
     // MARK: - init
     override init(frame: CGRect) {
@@ -33,9 +33,9 @@ class PhoneNumberCheckView: UIView, BasicViewSetup {
         textField.textColor = .black
         textField.setLeftPaddingPoints(10)
         textField.setRightPaddingPoints(10)
-        // textField.font = UIFont(name: UIFont.NSRegular, size: 10)
         textField.keyboardType = .numberPad
         textField.backgroundColor = .slpWhite
+        textField.font = UIFont(name: UIFont.NSRegular, size: 14)
         // textField.underLine(colors: .slpGray7)
     }
     
