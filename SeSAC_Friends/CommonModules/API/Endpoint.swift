@@ -15,14 +15,14 @@ enum Method: String {
 }
 
 enum Endpoint {
-    case signup
+    case login
 }
 
 extension Endpoint {
     var url: URL {
         switch self {
-        case .signup:
-            return .makeEndpoint("/auth/local/register")
+        case .login:
+            return .makeEndpoint("/user")
         }
     }
 }
@@ -34,3 +34,5 @@ extension URL {
         URL(string: baseURL + endpoint)!
     }
 }
+
+

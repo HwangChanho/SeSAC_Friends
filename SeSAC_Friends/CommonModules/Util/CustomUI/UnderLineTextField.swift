@@ -24,7 +24,7 @@ class UnderLineTextField: UITextField {
         addSubview(underLineView)
         
         underLineView.snp.makeConstraints { make in
-            make.top.equalTo(self.snp.bottom).offset(15)
+            make.top.equalTo(self.snp.bottom).offset(10)
             make.leading.trailing.equalToSuperview()
             make.height.equalTo(1)
         }

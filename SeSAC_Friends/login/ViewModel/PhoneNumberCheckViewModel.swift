@@ -21,29 +21,28 @@ class PhoneNumberCheckViewModel {
         
         PhoneAuthProvider.provider()
             .verifyPhoneNumber(number, uiDelegate: nil) { verificationID, error in
-            
-            if let error = error {
-                let state = AuthErrorCode(rawValue: error._code)
                 
-                switch state {
-                case .tooManyRequests:
-                    completion(.tooManyRequests)
-                default:
-                    completion(.unknownError)
+                if let error = error {
+                    let state = AuthErrorCode(rawValue: error._code)
+                    
+                    switch state {
+                    case .tooManyRequests:
+                        completion(.tooManyRequests)
+                    default:
+                        completion(.unknownError)
+                    }
+                    
+                    return
                 }
                 
-                return
-            }
-            
-            UserDefaults.standard.set(verificationID, forKey: Constants.UserInfo.firebaseAuth)
-            UserDefaults.standard.set(self.phoneNum, forKey: Constants.UserInfo.userPhoneNum)
+                UserDefaults.standard.set(verificationID, forKey: Constants.UserInfo.firebaseAuth)
+                UserDefaults.standard.set(number, forKey: Constants.UserInfo.userPhoneNum)
                 
-            completion(.success)
-        }
+                completion(.success)
+            }
     }
     
     // MARK: - Methods
-    
     func checkValidate(text: String) -> Bool {
         let nextText = text.replacingOccurrences(of: "-", with: "")
         
@@ -83,7 +82,11 @@ class PhoneNumberCheckViewModel {
             text.insert("-", at: text.index(text.startIndex, offsetBy: 3))
             text.insert("-", at: text.index(index, offsetBy: 4))
         default:
-            text = text.replacingOccurrences(of: "-", with: "")
+            let index = text.index(text.startIndex, offsetBy: 4)
+            
+            text.insert("-", at: text.index(text.startIndex, offsetBy: 3))
+            text.insert("-", at: text.index(index, offsetBy: 4))
+            // text = text.replacingOccurrences(of: "-", with: "")
             // text = text.components(separatedBy: ["-"]).joined()
         }
         

@@ -17,46 +17,28 @@ class AppCoordinator: Coordinator, LoginCoordinatorDelegate, MainCoordinatorDele
     
     var childCoordinators: [Coordinator] = []
     
-    private var navigationController: UINavigationController!
-    
-    var isLoggedIn: Bool = false
+    var navigationController: UINavigationController!
     
     init(presenter: UINavigationController) {
         self.navigationController = presenter
         self.childCoordinators = []
     }
-    
+    // 시작
     func start() {
-        showOnBoardingViewController()
-        // showMainViewController()
+        showNickNameController()
+//        print(!UserDefaults.isfirstLogin)
+//
 //        if !UserDefaults.isfirstLogin {
 //            showOnBoardingViewController()
 //            UserDefaults.standard.set(true, forKey: Constants.isFirstLoggin)
 //        } else {
-//
+//            showLoginViewController()
 //        }
     }
     
+    // MARK: - Verify VC
     private func showMainViewController() {
         let coordinator = MainCoordinator(navigationController: self.navigationController)
-        
-        coordinator.delegate = self
-        coordinator.start()
-        
-        self.childCoordinators.append(coordinator)
-    }
-    
-    private func showLoginViewController() {
-        let coordinator = LoginCoordinator(navigationController: self.navigationController)
-        
-        coordinator.delegate = self
-        coordinator.start()
-        
-        self.childCoordinators.append(coordinator)
-    }
-    
-    private func showOnBoardingViewController() {
-        let coordinator = OnBoardingCoordinator(navigationController: self.navigationController)
         
         coordinator.delegate = self
         coordinator.start()
@@ -70,12 +52,34 @@ class AppCoordinator: Coordinator, LoginCoordinatorDelegate, MainCoordinatorDele
     }
     
     func startButtonPressed(_ coordinator: MainCoordinator) {
+        // 회원가입 화면으로 이동
+        self.childCoordinators = self.childCoordinators.filter { $0 !== coordinator }
+        self.showNickNameController()
+    }
+    
+    // MARK: - PhoneNumber VC
+    func showLoginViewController() {
+        let coordinator = LoginCoordinator(navigationController: self.navigationController)
         
+        coordinator.delegate = self
+        coordinator.start()
+        
+        self.childCoordinators.append(coordinator)
     }
     
     func didLoggedIn(_ coordinator: LoginCoordinator) {
         self.childCoordinators = self.childCoordinators.filter { $0 !== coordinator }
         self.showMainViewController()
+    }
+    
+    // MARK: - Onboarding VC
+    private func showOnBoardingViewController() {
+        let coordinator = OnBoardingCoordinator(navigationController: self.navigationController)
+        
+        coordinator.delegate = self
+        coordinator.start()
+        
+        self.childCoordinators.append(coordinator)
     }
     
     func didStart(_ coordinator: OnBoardingCoordinator) {
@@ -84,6 +88,8 @@ class AppCoordinator: Coordinator, LoginCoordinatorDelegate, MainCoordinatorDele
     }
     
 }
+
+
 
 
 

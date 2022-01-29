@@ -38,6 +38,10 @@ class PhoneNumberVerifyView: UIView, BasicViewSetup {
         textField.keyboardType = .numberPad
         textField.backgroundColor = .slpWhite
         textField.font = UIFont(name: UIFont.NSRegular, size: 14)
+        textField.textContentType = .oneTimeCode // 인증문자 자동완성
+        textField.autocorrectionType = .no
+        textField.autocapitalizationType = .none
+        textField.becomeFirstResponder()
         
         button.defaultButton("재전송", backGroundColor: .slpGreen, titleColor: .slpWhite)
     }

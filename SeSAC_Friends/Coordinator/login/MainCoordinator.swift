@@ -33,6 +33,8 @@ class MainCoordinator: Coordinator, VerifyViewControllerDelegate {
         viewController.verifyView.middleView.textField.setTimer(timeMin: 1, timeSec: 0, color: .slpGreen)
         viewController.verifyView.middleView.textField.timerOn()
         
+        viewController.delegate = self
+        
         self.navigationController.viewControllers = [viewController]
     }
     

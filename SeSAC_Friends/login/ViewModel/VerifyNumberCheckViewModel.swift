@@ -8,12 +8,17 @@
 import RxSwift
 import FirebaseAuth
 import RxRelay
+import RxAlamofire
+import Alamofire
 
 class VerifyNumberCheckViewModel {
     let verifyNumberObserver = BehaviorSubject<String>(value: "")
     var verificationNumber = ""
     
     let validNum = BehaviorRelay<Bool>(value: false)
+    let loginList = PublishSubject<Login>()
+    
+    private let disposeBag = DisposeBag()
     
     // MARK: - Methods
     func checkValidateNum(text: String) -> Bool {
@@ -24,6 +29,22 @@ class VerifyNumberCheckViewModel {
         } else {
             return false
         }
+    }
+    
+    func checkValidId(completion: @escaping (Data?, UserEnum) -> Void) {
+        let headers: HTTPHeaders = [
+            "accept": "application/json",
+            "idtoken": UserDefaults.standard.string(forKey: Constants.UserInfo.idToken)!
+        ]
+        
+        RxAlamofire.requestData(.get, Endpoint.login.url, parameters: nil, headers: headers)
+            .debug()
+            .subscribe{ (header, data) in
+                let apiState = UserEnum(rawValue: header.statusCode)!
+                
+                completion(data, apiState)
+            }
+            .disposed(by: disposeBag)
     }
     
     // MARK: - Firebase
@@ -42,7 +63,20 @@ class VerifyNumberCheckViewModel {
                 }
                 return
             }
-            completion(.success)
+            
+            let currentUser = Auth.auth().currentUser
+            
+            currentUser?.getIDTokenForcingRefresh(true, completion: { idToken, error in
+                if let error = error {
+                    print(#function, error)
+                    completion(.unknownError)
+                    return;
+                }
+                
+                UserDefaults.standard.set(idToken, forKey: Constants.UserInfo.idToken)
+                
+                completion(.success)
+            })
         }
     }
 }

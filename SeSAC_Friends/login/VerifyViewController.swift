@@ -8,6 +8,7 @@
 import UIKit
 import RxSwift
 import RxCocoa
+import SwiftUI
 
 protocol VerifyViewControllerDelegate {
     func didBackButtonTapped()
@@ -89,18 +90,42 @@ class VerifyViewController: UIViewController {
                         // 성공
                         self.viewModel.checkValidate { status in
                             switch status {
-                            case .validityExpired:
+                            case .validityExpired, .wrongVerificationNumber:
                                 self.showEdgeToast(message: "전화번호 인증실패")
-                            case .wrongVerificationNumber:
-                                self.showEdgeToast(message: "전화번호 인증실패")
-                            case .tokenFail:
-                                self.showEdgeToast(message: "에러가 발생했습니다. 잠시 후 다시 시도해주세요.")
-                            case .unknownError:
+                            case .tokenFail, .unknownError:
                                 self.showEdgeToast(message: "에러가 발생했습니다. 잠시 후 다시 시도해주세요.")
                             case .success:
                                 // 뷰이동
-                                print("sucess")
-                                self.delegate?.didNextButtonTapped()
+                                self.viewModel.checkValidId { data, code in
+                                    switch code {
+                                    case .success:
+                                        // 홈화면으로 이동
+                                        print("success")
+                                        self.delegate?.didNextButtonTapped()
+                                    case .idTokenInvalid:
+                                        Firebase.shared.getIdToken { status in
+                                            switch status {
+                                            case .unknownError:
+                                                self.showEdgeToast(message: "에러가 발생했습니다. 잠시 후 다시 시도해주세요.")
+                                            case .success:
+                                                print("success : ", status)
+                                            default:
+                                                print(status)
+                                            }
+                                        }
+                                        print("Firebase Token Invalid")
+                                    case .noUser:
+                                        // 회원가입 화면으로 이동
+                                        self.delegate?.didNextButtonTapped()
+                                        print("no user")
+                                    case .clientError:
+                                        print("API Error")
+                                    case .serverError:
+                                        self.showEdgeToast(message: "관리자에게 문의해주세요.")
+                                    case .noConnection:
+                                        print("인터넷 연결 안됨")
+                                    }
+                                }
                             }
                         }
                     }

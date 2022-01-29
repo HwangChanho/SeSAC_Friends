@@ -13,9 +13,9 @@ struct Constants {
     struct UserInfo {
         static let firebaseAuth = "authVerificationID"
         static let userPhoneNum = "userPhoneNumber"
+        static let FCMtoken = "userFCMToken"
+        static let idToken = "idToken"
         
-        
-        static let token = "userToken"
         static let userName = "username"
         static let userId = "userId"
         static let userEmail = "userEmail"
