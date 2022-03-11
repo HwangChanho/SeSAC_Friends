@@ -42,6 +42,7 @@ final class HobbyViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        getQueueData()
         
         hobbyView.collectionView.delegate = self
         hobbyView.collectionView.dataSource = self
@@ -58,6 +59,18 @@ final class HobbyViewController: UIViewController {
     }
     
     // MARK: - Methods
+    private func getQueueData() {
+        viewModel.caculateRegion()
+        viewModel.onQueue { [self] message, code in
+            switch code {
+            case .noUser:
+                didSendEventClosure?(.moveToOnboarding)
+            default:
+                showEdgeToast(message: message)
+            }
+        }
+    }
+    
     private func bindButton() {
         hobbyView.button.rx.tap
             .subscribe(onNext: { [self] _ in

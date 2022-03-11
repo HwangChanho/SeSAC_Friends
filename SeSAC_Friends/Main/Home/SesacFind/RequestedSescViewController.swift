@@ -41,22 +41,30 @@ final class RequestedSesacViewController: UIViewController {
     override func loadView() {
         super.loadView()
         
-        view = nearUserView
+        if viewModel.data.value.fromQueueDBRequested.isEmpty {
+            view = noFriendView
+        } else {
+            view = nearUserView
+        }
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        nearUserView.tableView.delegate = self
-        nearUserView.tableView.dataSource = self
+        print(viewModel.data.value.fromQueueDBRequested)
         
-        for _ in 0 ..< viewModel.data.value.fromQueueDB.count {
-            buttonToggle.append(true)
-            bindingFlag.append(false)
-            cell.append(NearSesacCell())
+        if viewModel.data.value.fromQueueDBRequested.isEmpty {
+            bindButtons()
+        } else {
+            nearUserView.tableView.delegate = self
+            nearUserView.tableView.dataSource = self
+            
+            for _ in 0 ..< viewModel.data.value.fromQueueDBRequested.count {
+                buttonToggle.append(true)
+                bindingFlag.append(false)
+                cell.append(NearSesacCell())
+            }
         }
-        
-        setUI()
     }
     
     deinit {
@@ -64,8 +72,35 @@ final class RequestedSesacViewController: UIViewController {
     }
     
     // MARK: - Methods
-    func setUI() {
+    private func bindButtons() {
+        noFriendView.changeHobbyButton.rx.tap
+            .subscribe(onNext: { [self] _ in
+                viewModel.deleteQueue { message, code in
+                    switch code {
+                    case .success:
+                        delegate?.backToSesacFind()
+                    case .noUser:
+                        delegate?.backToOnboarding()
+                    default:
+                        showEdgeToast(message: message)
+                    }
+                }
+            })
+            .disposed(by: disposeBag)
         
+        noFriendView.reloadButton.rx.tap
+            .subscribe(onNext: { [self] _ in
+                self.noFriendView.reloadButton.isEnabled = false
+                viewModel.onQueue { [self] message, code in
+                    switch code {
+                    case .noUser:
+                        delegate?.backToOnboarding()
+                    default:
+                        showEdgeToast(message: message)
+                    }
+                }
+            })
+            .disposed(by: disposeBag)
     }
 }
 
@@ -78,11 +113,14 @@ extension RequestedSesacViewController: UITableViewDelegate, UITableViewDataSour
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = self.cell[indexPath.row]
         
+        cell.button.backgroundColor = .blue
+        cell.button.setTitle("수락하기", for: .normal)
+        
         cell.cardView.textField.delegate = self
         
         cell.cardView.hideView(self.buttonToggle[indexPath.row])
         
-        let row = viewModel.data.value.fromQueueDB[indexPath.row]
+        let row = viewModel.data.value.fromQueueDBRequested[indexPath.row]
         
         cell.buttonTapActionHandler = {
             // 요청하기
@@ -147,13 +185,13 @@ extension RequestedSesacViewController: UITableViewDelegate, UITableViewDataSour
         self.alert.activeAlert(title: "취미 같이 하기를 요청할게요!", SubTitle: "요청이 수락되면 30분후에 리뷰를 남길 수 있어요", button: [.cancel, .done])
         self.alert.modalPresentationStyle = .overCurrentContext
         self.alert.handler = {
-            self.viewModel.requestHobby(otherUid: row.uid) { [self] message, code in
+            self.viewModel.acceptHobby(otherUid: row.uid) { [self] message, code in
                 switch code {
                 case .success:
                     showEdgeToast(message: message)
-                    alert.dismiss(animated: true, completion: nil)
+                    // 채팅화면으로 이동
+                    
                 default:
-                    alert.dismiss(animated: true, completion: nil)
                     showEdgeToast(message: message)
                 }
             }

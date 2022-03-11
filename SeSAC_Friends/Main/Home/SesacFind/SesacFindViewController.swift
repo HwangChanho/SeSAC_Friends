@@ -24,6 +24,7 @@ final class SesacFindViewController: TabmanViewController, NearSesacViewControll
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
+        getQueueData()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -70,6 +71,18 @@ final class SesacFindViewController: TabmanViewController, NearSesacViewControll
     }
     
     // MARK: - Methods
+    func getQueueData() {
+        viewModel.caculateRegion()
+        viewModel.onQueue { [self] message, code in
+            switch code {
+            case .noUser:
+                didSendEventClosure?(.moveToOnboarding)
+            default:
+                showEdgeToast(message: message)
+            }
+        }
+    }
+    
     func backToOnboarding() {
         didSendEventClosure?(.moveToOnboarding)
     }

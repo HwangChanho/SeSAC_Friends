@@ -58,6 +58,8 @@ final class NearSesacViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        print(viewModel.data.value.fromQueueDB)
+        
         if viewModel.data.value.fromQueueDB.isEmpty {
             bindButtons()
         } else {

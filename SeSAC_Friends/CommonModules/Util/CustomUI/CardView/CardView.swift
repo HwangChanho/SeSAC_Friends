@@ -166,6 +166,7 @@ final class CardView: UIView {
         textField.tintColor = .slpGray7
         textField.textContainerInset = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 10)
         textField.isScrollEnabled = false
+        textField.isEditable = false
     }
     
     func setupConstraints() {

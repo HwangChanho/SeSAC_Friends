@@ -176,6 +176,7 @@ class HomeViewModel {
 
                          채팅 화면(1_5_chatting)의 경우, dodged가 1이거나 reviewed가 1이라면 “취미 함께하기가 종료되어 채팅을 전송할 수 없습니다” Toast 메시지*/
                         print(code, "getMyQueueState")
+                        completion("앗! 누군가가 나의 취미 함께 하기를 수락하였어요!", code)
                     case .userExist:
                         completion("오랜 시간 동안 매칭 되지 않아 새싹 친구 찾기를 그만둡니다", code)
                     case .firebaseInvalid:
@@ -227,6 +228,8 @@ class HomeViewModel {
                 guard let queueData = dataValue else { return }
                 
                 data.accept(queueData)
+                
+                print("data : ", data.value)
                 
                 var arr: [[Int]] = []
                 queueData.fromQueueDB.forEach {
